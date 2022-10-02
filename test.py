@@ -30,37 +30,60 @@ def _average_tweet_len():  # v1
     df_avg_tweet_len.to_csv('./dataset/users_avg_tweet_len.csv')
 
 
-def average_tweet_len():  # v2
+def get_indicators_csv():  # v3
     df_tweets = pd.read_csv('./dataset/tweets.csv', sep=',', index_col=0)  # load tweets
-    # create a dataframe for storing tweet counts and average tweet length per user
-    df_avg_tweet_len = pd.DataFrame(columns=['tweet_count', 'avg_tweet_len'])
+    # create a dataframe for storing indicators
+    # current indicators: total number of tweets, average tweet length, total number of likes, like ratio per tweet
+    df_indicators = pd.DataFrame(columns=['tweet_count', 'avg_tweet_len', 'total_num_of_likes', 'like_ratio_per_tweet'])
     # setting the index column name to 'id'
-    df_avg_tweet_len.index.names = ['id']
+    df_indicators.index.names = ['id']
 
     # iterating on tweets
     for id_tweet, tweet in df_tweets.iterrows():
         user_id = tweet['user_id']
 
-        # if a user published a tweet and is not into the dataframe
-        if user_id not in df_avg_tweet_len.index:
-            avg_tweet_len = len(str(tweet['text']))
-            # tweet count is set to 1 and the average length is the length of the sole tweet published
-            df_avg_tweet_len.loc[user_id] = 1, avg_tweet_len
+        if str.isdigit(str(user_id)):
+            user_id = int(user_id)
 
-        # if a user published a tweet and is into the dataframe
-        else:
-            previous_tweet_count = df_avg_tweet_len.at[user_id, 'tweet_count']
-            previous_avg = df_avg_tweet_len.at[user_id, 'avg_tweet_len']
-            # summing the previous average multiplied for n/n+1 with the current tweet length multiplied for 1/n+1 gives
-            # us the current average where n is the previous tweet count
-            avg_tweet_len = previous_avg * (previous_tweet_count / (previous_tweet_count + 1)) \
-                            + len(str(tweet['text'])) * (1 / (previous_tweet_count + 1))
+            # if a user published a tweet and is not into the dataframe
+            if user_id not in df_indicators.index:
+                avg_tweet_len = len(str(tweet['text']))
+                number_of_likes = tweet['favorite_count']
+                # tweet count is set to 1 and the average length is the length of the sole tweet published
+                df_indicators.at[user_id, 'tweet_count'] = 1
+                df_indicators.at[user_id, 'avg_tweet_len'] = avg_tweet_len
 
-            df_avg_tweet_len.at[user_id, 'tweet_count'] += 1
-            df_avg_tweet_len.at[user_id, 'avg_tweet_len'] = avg_tweet_len
+                if str.isdigit(str(number_of_likes)):
+                    df_indicators.at[user_id, 'total_num_of_likes'] = int(number_of_likes)
+                else:
+                    df_indicators.at[user_id, 'total_num_of_likes'] = 0
 
-    df_avg_tweet_len.to_csv('./dataset/users_avg_tweet_len.csv')
+            # if a user published a tweet and is into the dataframe
+            else:
+                previous_tweet_count = df_indicators.at[user_id, 'tweet_count']
+                previous_avg = df_indicators.at[user_id, 'avg_tweet_len']
+
+                # summing the previous average multiplied for n/n+1 with the current tweet length multiplied for
+                # 1/n+1 gives us the current average where n is the previous tweet count
+                avg_tweet_len = previous_avg * (previous_tweet_count / (previous_tweet_count + 1)) \
+                                + len(str(tweet['text'])) * (1 / (previous_tweet_count + 1))
+
+                number_of_likes = tweet['favorite_count']
+
+                df_indicators.at[user_id, 'tweet_count'] += 1
+                df_indicators.at[user_id, 'avg_tweet_len'] = avg_tweet_len
+
+                if str.isdigit(str(number_of_likes)):
+                    df_indicators.at[user_id, 'total_num_of_likes'] = int(number_of_likes)
+
+    # ratios
+    for id_user, user in df_indicators.iterrows():
+        # tweet count is always >0, so there is no risk of a zero division
+        user['like_ratio_per_tweet'] = user['total_num_of_likes'] / user['tweet_count']
+
+    df_indicators.to_csv('./dataset/users_avg_tweet_len.csv')
 
 
 if __name__ == '__main__':
-    average_tweet_len()
+    df_users = pd.read_csv('./dataset/users.csv', sep=',', index_col=0)  # load users
+    get_indicators_csv()
