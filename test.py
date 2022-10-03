@@ -29,7 +29,6 @@ def _average_tweet_len():  # v1
     # saving into a csv for future merging
     df_avg_tweet_len.to_csv('./dataset/users_avg_tweet_len.csv')
 
-
 def get_indicators_csv():  # v3
     df_tweets = pd.read_csv('./dataset/tweets.csv', sep=',', index_col=0)  # load tweets
     # create a dataframe for storing indicators
@@ -42,6 +41,7 @@ def get_indicators_csv():  # v3
     for id_tweet, tweet in df_tweets.iterrows():
         user_id = tweet['user_id']
 
+        #Analisi/Pulizia dei dati prima dell'estrazione degli indicatori, per tenere traccia dei dati non validi
         if str.isdigit(str(user_id)):
             user_id = int(user_id)
 
@@ -50,10 +50,11 @@ def get_indicators_csv():  # v3
                 avg_tweet_len = len(str(tweet['text']))
                 number_of_likes = tweet['favorite_count']
                 # tweet count is set to 1 and the average length is the length of the sole tweet published
+
                 df_indicators.at[user_id, 'tweet_count'] = 1
                 df_indicators.at[user_id, 'avg_tweet_len'] = avg_tweet_len
 
-                if str.isdigit(str(number_of_likes)):
+                if str.isdigit(str(number_of_likes)):  # Vedi analisi sopra
                     df_indicators.at[user_id, 'total_num_of_likes'] = int(number_of_likes)
                 else:
                     df_indicators.at[user_id, 'total_num_of_likes'] = 0
@@ -74,7 +75,7 @@ def get_indicators_csv():  # v3
                 df_indicators.at[user_id, 'avg_tweet_len'] = avg_tweet_len
 
                 if str.isdigit(str(number_of_likes)):
-                    df_indicators.at[user_id, 'total_num_of_likes'] = int(number_of_likes)
+                    df_indicators.at[user_id, 'total_num_of_likes'] += int(number_of_likes)
 
     # ratios
     for id_user, user in df_indicators.iterrows():
@@ -85,5 +86,8 @@ def get_indicators_csv():  # v3
 
 
 if __name__ == '__main__':
-    df_users = pd.read_csv('./dataset/users.csv', sep=',', index_col=0)  # load users
-    get_indicators_csv()
+    df_indicators = pd.DataFrame(columns=['ciao'])
+    df_indicators.at[1, 'ciao'] = 'aaaaaaaaaaaa bbbbbbbbbbbbbb cccccccccccccc'
+
+    df_indicators.info()
+    #get_indicators_csv()
