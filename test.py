@@ -84,6 +84,19 @@ def get_indicators_csv():  # v3
 
     df_indicators.to_csv('./dataset/users_avg_tweet_len.csv')
 
+def testing():
+    #Testinggggggggggg
+    #df_tweets1 = df_tweets.head(5)
+    #new_df_tweets = df_tweets1.drop(df_tweets1[pd.to_numeric(df_tweets1['user_id'], errors='coerce').isnull()].index) # Tweets where the user id is not a number
+    #new_df_tweets['user_id'] = pd.to_numeric(new_df_tweets['user_id'], errors='coerce')
+    #print(new_df_tweets.convert_dtypes().dtypes)
+    #new_df_tweets.info()
+    #df_tweets['text'].isnull()
+    #df_tweets.info()
+    #print(type(df_tweets.at['461498835362013185','user_id'])) # check the type of a cell
+    #df_tweets.astype({'user_id':int64},errors='ignore').convert_dtypes().info()#[df_tweets['user_id'].apply(lambda x: isinstance(x, int64))]
+    pass
+
 
 if __name__ == '__main__':
     df_indicators = pd.DataFrame(columns=['ciao'])
