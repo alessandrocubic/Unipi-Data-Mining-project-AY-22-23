@@ -99,8 +99,4 @@ def testing():
 
 
 if __name__ == '__main__':
-    df_indicators = pd.DataFrame(columns=['ciao'])
-    df_indicators.at[1, 'ciao'] = 'aaaaaaaaaaaa bbbbbbbbbbbbbb cccccccccccccc'
-
-    df_indicators.info()
-    #get_indicators_csv()
+    get_indicators_csv()
