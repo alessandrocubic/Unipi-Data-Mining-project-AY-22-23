@@ -29,7 +29,7 @@ def _average_tweet_len():  # v1
     # saving into a csv for future merging
     df_avg_tweet_len.to_csv('./dataset/users_avg_tweet_len.csv')
 
-def get_indicators_csv():  # v3
+def get_indicators_csv_():
     df_tweets = pd.read_csv('./dataset/tweets.csv', sep=',', index_col=0)  # load tweets
     # create a dataframe for storing indicators
     # current indicators: total number of tweets, average tweet length, total number of likes, like ratio per tweet
@@ -83,6 +83,59 @@ def get_indicators_csv():  # v3
         user['like_ratio_per_tweet'] = user['total_num_of_likes'] / user['tweet_count']
 
     df_indicators.to_csv('./dataset/users_avg_tweet_len.csv')
+
+def get_indicators_csv():
+    df_tweets = pd.read_csv('./dataset/tweets.csv', sep=',', index_col=0)  # load tweets
+    # create a dataframe for storing indicators
+    # current indicators: total number of tweets, average tweet length, total number of likes, like ratio per tweet
+    df_indicators = pd.DataFrame(columns=['tweet_count', 'avg_tweet_len', 'total_num_of_likes', 'like_ratio_per_tweet', 'day_entropy'])
+    
+    # setting the index column name to 'id'
+    df_indicators.index.names = ['user_id']
+
+    # iterating on tweets
+    for id_tweet, tweet in df_tweets.iterrows():
+        user_id = np.int64(tweet['user_id'])
+        
+    # if a user published a tweet and is not into the dataframe
+        if user_id not in df_indicators.index:
+            avg_tweet_len = len(str(tweet['text']))
+            number_of_likes = tweet['favorite_count']
+            # tweet count is set to 1 and the average length is the length of the sole tweet published
+
+            #Assign to the indicator dataframe
+            df_indicators.at[user_id, 'tweet_count'] = 1
+            df_indicators.at[user_id, 'avg_tweet_len'] = avg_tweet_len
+            df_indicators.at[user_id, 'total_num_of_likes'] = np.int64(number_of_likes)
+            df_indicators.at[user_id, 'day_entropy'] = 0 #Todo: calcolare entropia
+            
+
+        # if a user published a tweet and is into the dataframe
+        else:
+            previous_tweet_count = df_indicators.at[user_id, 'tweet_count']
+            previous_avg = df_indicators.at[user_id, 'avg_tweet_len']
+
+            # summing the previous average multiplied for n/n+1 with the current tweet length multiplied for
+            # 1/n+1 gives us the current average where n is the previous tweet count
+            avg_tweet_len = previous_avg * (previous_tweet_count / (previous_tweet_count + 1)) \
+                            + len(str(tweet['text'])) * (1 / (previous_tweet_count + 1))
+
+            number_of_likes = tweet['favorite_count']
+
+            #Update to the indicator dataframe
+            df_indicators.at[user_id, 'tweet_count'] += 1
+            df_indicators.at[user_id, 'avg_tweet_len'] = avg_tweet_len
+            df_indicators.at[user_id, 'total_num_of_likes'] += np.int64(number_of_likes)
+            df_indicators.at[user_id, 'day_entropy'] += 0 #Todo: calcolare entropia
+
+
+    # ratios
+    for id_user, user in df_indicators.iterrows():
+        # tweet count is always >0, so there is no risk of a zero division
+        user['like_ratio_per_tweet'] = user['total_num_of_likes'] / user['tweet_count']
+
+    df_indicators.to_csv('./dataset/users_avg_tweet_len.csv')
+
 
 def testing():
     #Testinggggggggggg
