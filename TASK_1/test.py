@@ -11,7 +11,7 @@ min_date = np.datetime64('2006-07-15 00:00:00')
 max_date = np.datetime64('2020-12-31 23:59:59')
 
 def get_indicators_csv():
-    df_tweets = pd.read_csv('./dataset/tweets.csv', sep=',', index_col=0)  # load tweets
+    df_tweets = pd.read_csv('../dataset/tweets.csv', sep=',', index_col=0)  # load tweets
     # create a dataframe for storing indicators
     # current indicators: total number of tweets, average tweet length, total number of likes, like ratio per tweet
     df_indicators = pd.DataFrame(columns=['tweet_count', 'avg_tweet_len', 'total_num_of_likes', 'like_ratio_per_tweet', 'years_not_valid'])
@@ -66,7 +66,7 @@ def get_indicators_csv():
         # tweet count is always >0, so there is no risk of a zero division
         user['like_ratio_per_tweet'] = user['total_num_of_likes'] / user['tweet_count']
 
-    df_indicators.to_csv('./dataset/users_avg_tweet_len.csv')
+    df_indicators.to_csv('../dataset/users_avg_tweet_len.csv')
 
 def get_entropy_from_timedeltas(list_of_timedeltas,user_id):
     #The probability of a timedelta to appear is the number of times the unique timedelta has appeared over total number of times timedeltas appeared
@@ -115,7 +115,7 @@ def get_entropy_over_time():
         else:
             user_entropy_list[user_id] = get_entropy_from_timedeltas(tweet_timedeltas[user_id],user_id) #the entropy is calculated
 
-    return user_entropy_list
+    df_entropy = pd.DataFrame.from_dict(user_entropy_list).to_csv('../dataset/users_entropy.csv')
 
 def testing():
     #Testinggggggggggg
@@ -133,8 +133,4 @@ def testing():
 
 if __name__ == '__main__':
     dict_of_entropies = get_entropy_over_time()
-    #print("User 403782011 entropy = ",dict_of_entropies[403782011])
-    #for user_id in dict_of_entropies:
-     #   if dict_of_entropies[user_id] is not None:
-      #      if dict_of_entropies[user_id] < 2:
-       #         print("User:",user_id,"entropy:",dict_of_entropies[user_id])
+    
