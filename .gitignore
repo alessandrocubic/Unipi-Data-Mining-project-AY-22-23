@@ -1,4 +1,5 @@
 /dataset/users.csv
 /dataset/tweets.csv
 /dataset/users_avg_tweet_len.csv
-dataset/tweets.csv
+/dataset/tweets.csv
+/dataset/cleaned_joined_tweets.csv
