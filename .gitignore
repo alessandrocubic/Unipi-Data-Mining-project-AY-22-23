@@ -4,3 +4,9 @@
 /dataset/tweets.csv
 /dataset/cleaned_joined_tweets.csv
 dataset/indicators.csv
+dataset/.old/cleaned_joined_tweets.csv
+dataset/.old/cleaned_users.csv
+dataset/.old/indicators.csv
+dataset/.old/tweets_sample.csv
+dataset/.old/user_indicators_uncorrelated.csv
+dataset/.old/user_indicators.csv
