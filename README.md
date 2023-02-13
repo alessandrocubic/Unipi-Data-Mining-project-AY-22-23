@@ -2,7 +2,7 @@
 
 Project for the Data Mining course @ [University of Pisa](https://www.unipi.it/index.php/english)
 
-Authors: [Alberto Marinelli](https://github.com/AlbertoMarinelli), [Alessandro Bucci](https://github.com/Ginko2355), [Giacomo Cignoni](https://github.com/giacomo-cgn)
+Authors: [Alessandro Bucci](https://github.com/alessandrocubic), [Alberto Marinelli](https://github.com/AlbertoMarinelli), [Giacomo Cignoni](https://github.com/giacomo-cgn)
 
 
 ### Abstract
